@@ -1,0 +1,113 @@
+:root {
+    --accent-color: rgb(0, 122, 255);
+    --accent-color-hover: rgb(30, 152, 255);
+    --accent-color-pressed: rgb(0, 102, 235);
+}
+
+* {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background-color: #F2F2F7;
+    margin: 0px;
+}
+
+h1 {
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    font: -apple-system-title0;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 8px;
+    padding-top: 50px;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    position: sticky;
+    top: 0;
+}
+
+h2 {
+    font: -apple-system-headline;
+    margin: 0px;
+    margin-top: 16px;
+    margin-bottom: -14px;
+    margin-left: 20px;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+p, b {
+    /* font-size: 0.875rem; */
+    font: -apple-system-body;
+    margin: 0px;
+    overflow-wrap: break-word;
+}
+
+b {
+    font: -apple-system-body;
+    font-weight: bold;
+    margin: 0px;
+    overflow-wrap: break-word;
+}
+
+textarea {
+    border: none;
+    font: -apple-system-body;
+    min-width: 100px;
+    flex-grow: 1;
+}
+
+input[type="submit"] {
+    font-weight: unset;
+}
+
+hr {
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    margin: 0px -20px 0px 0px;
+}
+
+.groupContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px;
+}
+
+.groupBox {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 10px;
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.dividerFullWidth {
+    margin: 0px -20px!important;
+}
+
+.button {
+    background-color: unset;
+    color: var(--accent-color);
+    border: none;
+    font: -apple-system-body;
+}
+
+.button:hover {
+    color: var(--accent-color-hover);
+}
+
+.button:active {
+    color: var(--accent-color-pressed);
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <title>Kuery</title>
+</head>
+<body>
+<h1>Execute Query</h1>
+<div class="groupContainer">
+    <form id="form" class="groupBox" style="margin-bottom: unset;">
+        <textarea id="query" placeholder="Query to Execute" rows="10" required></textarea>
+        <hr class="dividerFullWidth">
+        <button type="submit" class="button">Execute Query</button>
+    </form>
+</div>
+<div class="groupContainer">
+    <h2>Query Results</h2>
+    <div class="groupBox">
+        <p id="query-result">Execute a query to see its results here</p>
+        <p style="color: gray">Query results are trimmed to the first 1,000 characters. The results you see here may be incomplete.</p>
+    </div>
+</div>
+<div class="groupContainer">
+    <h2>SSL Information</h2>
+    <div class="groupBox">
+        <p id="query-ssl-info">No information available</p>
+    </div>
+</div>
+<script>
+  document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let query = document.getElementById("query").value;
+    let queryResultParagraph = document.getElementById("query-result");
+    let queryResultSSLInfoParagraph = document.getElementById("query-ssl-info");
+
+    queryResultParagraph.innerText = "Executing...";
+    queryResultSSLInfoParagraph.innerText = "Fetching...";
+
+    fetch("/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: query,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        let queryResult = responseJSON["result"];
+        let queryResultSSLInfo = responseJSON["sslInfo"];
+        queryResultParagraph.innerText = queryResult;
+        queryResultSSLInfoParagraph.innerText = queryResultSSLInfo;
+      })
+      .catch((error) => {
+        queryResultParagraph.innerText = error;
+        queryResultSSLInfoParagraph.innerText = "No information available";
+      });
+  });
+</script>
+</body>
+</html>
