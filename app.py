@@ -17,8 +17,9 @@ def index():
 def query():
     request_data = request.get_json()
     request_query = request_data["query"]
+    request_tls_enabled = request_data["tls"]
 
-    query_results: DataFrame = do_qsql_query(request_query)
+    query_results: DataFrame = do_qsql_query(request_query, request_tls_enabled)
 
     return json.dumps(query_results.to_json(), indent=4)
 

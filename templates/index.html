@@ -11,6 +11,11 @@
     <form id="form" class="groupBox" style="margin-bottom: unset;">
         <textarea id="query" placeholder="Query to Execute" rows="10" required></textarea>
         <hr class="dividerFullWidth">
+        <span style="display: flex; flex-direction: row; gap: 8px;">
+        <input type="checkbox" id="enable-tls"/>
+        <label for="enable-tls"><p>Enable TLS</p></label>
+            </span>
+        <hr class="dividerFullWidth">
         <button type="submit" class="button">Execute Query</button>
     </form>
 </div>
@@ -18,7 +23,8 @@
     <h2>Query Results</h2>
     <div class="groupBox">
         <p id="query-result">Execute a query to see its results here</p>
-        <p style="color: gray">Query results are trimmed to the first 1,000 characters. The results you see here may be incomplete.</p>
+        <p style="color: gray">Query results are trimmed to the first 1,000 characters. The results you see here may be
+            incomplete.</p>
     </div>
 </div>
 <script>
@@ -26,6 +32,7 @@
     e.preventDefault();
 
     let query = document.getElementById("query").value;
+    let queryTLSEnabled = document.getElementById("enable-tls").checked;
     let queryResultParagraph = document.getElementById("query-result");
 
     queryResultParagraph.innerText = "Executing...";
@@ -37,6 +44,7 @@
       },
       body: JSON.stringify({
         query: query,
+        tls: (queryTLSEnabled ? 1 : 0)
       }),
     })
       .then((response) => response.json())

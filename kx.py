@@ -14,26 +14,30 @@ load_dotenv()
 logger = getLogger(__name__)
 
 
-def do_qsql_query(query: str) -> DataFrame:
-    query_results_directory = "./query_results"
-    if not os.path.exists(query_results_directory):
-        os.makedirs(query_results_directory)
+def do_qsql_query(query: str, is_tls_enabled: bool) -> DataFrame:
+    if is_tls_enabled:
+        query_results_directory = "./query_results"
+        if not os.path.exists(query_results_directory):
+            os.makedirs(query_results_directory)
 
-    query_results_path = os.path.abspath(f"{query_results_directory}/{str(uuid4())}.qsr")
-    run(["python", "./kx.py", query_results_path, query])
+        query_results_path = os.path.abspath(f"{query_results_directory}/{str(uuid4())}.qsr")
+        run(["python", "./kx.py", query_results_path, query])
 
-    try:
-        with open(query_results_path, "r") as query_results_file:
-            subprocess_output_json_string = query_results_file.read()
-        os.remove(query_results_path)
-    except Exception as error:
-        logger.error(f"{error}")
-        subprocess_output_json_string = None
+        try:
+            with open(query_results_path, "r") as query_results_file:
+                subprocess_output_json_string = query_results_file.read()
+            os.remove(query_results_path)
+        except Exception as error:
+            logger.error(f"{error}")
+            subprocess_output_json_string = None
 
-    return read_json(StringIO(subprocess_output_json_string), orient="records")
+        return read_json(StringIO(subprocess_output_json_string), orient="records")
+    else:
+        query_result = query_q_server(query, False)
+        return read_json(StringIO(query_result), orient="records")
 
 
-def query_q_server(query: str) -> str:
+def query_q_server(query: str, is_tls_enabled: bool) -> str:
     try:
         os.environ["SSL_VERIFY_SERVER"] = "NO"
 
@@ -45,7 +49,7 @@ def query_q_server(query: str) -> str:
                 username=os.environ.get("KDB_USERNAME", None),
                 password=os.environ.get("KDB_PASSWORD", None),
                 timeout=10,
-                tls=True,
+                tls=is_tls_enabled,
         ) as q_connection:
             q_response_in_dataframes: DataFrame = q_connection(query).pd()
             q_response_in_json: str = q_response_in_dataframes.to_json(orient="records", date_format="iso")
@@ -58,7 +62,7 @@ if __name__ == "__main__":
     executor_query_results_path = sys.argv[1] if len(sys.argv) > 2 else None
     executor_query = sys.argv[2] if len(sys.argv) > 2 else None
 
-    query_results = query_q_server(executor_query)
+    query_results = query_q_server(executor_query, True)
 
     try:
         with open(executor_query_results_path, "w") as executor_query_results_file:
