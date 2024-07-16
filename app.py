@@ -1,8 +1,9 @@
 import json
-import re
-from subprocess import Popen, PIPE, STDOUT
 
 from flask import Flask, render_template, request, jsonify
+from pandas import DataFrame
+
+from kx import do_qsql_query
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 
@@ -17,16 +18,9 @@ def query():
     request_data = request.get_json()
     request_query = request_data["query"]
 
-    subprocess = Popen(
-        args=["python", "kx.py", request_query],
-        stdout=PIPE,
-        stderr=STDOUT
-    )
-    stdout, stderr = subprocess.communicate()
+    query_results: DataFrame = do_qsql_query(request_query)
 
-    subprocess_output = stdout.decode("utf-8")
-    response_json = re.search(r"```KXResultJSON```([\s\S]*)```KXResultJSON```", subprocess_output).group(1)
-    return jsonify(json.loads(response_json))
+    return json.dumps(query_results.to_json(), indent=4)
 
 
 if __name__ == "__main__":

@@ -21,22 +21,14 @@
         <p style="color: gray">Query results are trimmed to the first 1,000 characters. The results you see here may be incomplete.</p>
     </div>
 </div>
-<div class="groupContainer">
-    <h2>SSL Information</h2>
-    <div class="groupBox">
-        <p id="query-ssl-info">No information available</p>
-    </div>
-</div>
 <script>
   document.getElementById("form").addEventListener("submit", function (e) {
     e.preventDefault();
 
     let query = document.getElementById("query").value;
     let queryResultParagraph = document.getElementById("query-result");
-    let queryResultSSLInfoParagraph = document.getElementById("query-ssl-info");
 
     queryResultParagraph.innerText = "Executing...";
-    queryResultSSLInfoParagraph.innerText = "Fetching...";
 
     fetch("/query", {
       method: "POST",
@@ -49,14 +41,10 @@
     })
       .then((response) => response.json())
       .then((responseJSON) => {
-        let queryResult = responseJSON["result"];
-        let queryResultSSLInfo = responseJSON["sslInfo"];
-        queryResultParagraph.innerText = queryResult;
-        queryResultSSLInfoParagraph.innerText = queryResultSSLInfo;
+        queryResultParagraph.innerText = responseJSON;
       })
       .catch((error) => {
         queryResultParagraph.innerText = error;
-        queryResultSSLInfoParagraph.innerText = "No information available";
       });
   });
 </script>
